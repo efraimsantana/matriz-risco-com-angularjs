@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="node_modules/angular/angular.min.js"></script>
+
+    <title>Document</title>
+    <style>
+        .row {
+            height: 50px;
+            width: 550px;
+        }
+
+        .column{
+            height: 100px;
+            width: 100px;
+            float: left;
+            margin: 1px
+        }
+    </style>
+</head>
+
+<body>
+    <div ng-controller="MatrizController as vm">
+        <div class="table">
+            <div class="row" ng-repeat="row in vm.matriz">
+                <div class="column" ng-repeat="column in row.columns" ng-style="{backgroundColor: column.criticidade}" > 
+                    {{column.value}}
+                </div>    
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function MatrizController() {
+            var vm = this;
+
+            vm.niveisImpactos = [{
+                    id: 1,
+                    nome: 'Imp 1'
+                },
+                {
+                    id: 2,
+                    nome: 'Imp 2'
+                }, 
+                {
+                    id: 3,
+                    nome: 'Imp 3'
+                }, 
+                {
+                    id: 4,
+                    nome: 'Imp 4'
+                }, 
+                {
+                    id: 5,
+                    nome: 'Imp 5'
+                }
+            ];
+
+            vm.niveisProbabilidades = [{
+                    id: 1,
+                    nome: 'Prob 1'
+                },
+                {
+                    id: 2,
+                    nome: 'Prob 2'
+                }, 
+                {
+                    id: 3,
+                    nome: 'Prob 3'
+                }, 
+                {
+                    id: 4,
+                    nome: 'Prob 4'
+                }, 
+                {
+                    id: 5,
+                    nome: 'Prob 5'
+                }
+            ];
+
+            vm.dados = [
+                {idImp: 1, idProb: 1, criticidade: 1, value: 'R1'},
+                {idImp: 5, idProb: 1, criticidade: 1, value: 'R2'}
+            ];
+
+            vm.matriz = vm.niveisProbabilidades.map(function(prob){
+                var row = angular.copy(prob);
+                row.columns = vm.niveisImpactos.map(function(imp, i){
+                    var box = vm.dados.filter(function(itemBox){
+                        return itemBox.idImp == imp.id && itemBox.idProb == prob.id;
+                    })[0];
+                    var col = angular.copy(imp);
+                    col.criticidade = (i % 2 == 0) ? "blue" : "red";
+                    col.value = box ? box.value : "";
+                    return col;
+                });
+                return row;
+            });
+        }
+
+        angular.module("app", []).controller("MatrizController", MatrizController);
+    </script>
+</body>
+
+</html>
